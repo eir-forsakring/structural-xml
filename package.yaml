@@ -43,6 +43,7 @@ ghc-options:
 - -Wno-missing-safe-haskell-mode
 - -Wno-prepositive-qualified-module
 - -Wno-all-missed-specialisations
+- -Wno-missing-kind-signatures 
 library:
   source-dirs: src
 
