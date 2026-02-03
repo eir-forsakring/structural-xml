@@ -1,3 +1,4 @@
+{-# LANGUAGE RoleAnnotations #-}
 {-# OPTIONS_GHC -Wno-redundant-constraints #-}
 
 module Data.XML.Parse.Unordered
@@ -34,6 +35,7 @@ import Data.XML.Types
 import GHC.Stack
 
 -- Quadratic behaviour in number of children. Could be improved, but probably not an issue.
+type role UnorderedM nominal nominal
 newtype UnorderedM i a = UnorderedM (StateT (AnnotatedElement i) (Either (ParserError i)) a)
   deriving newtype (Functor, Applicative, Monad, MonadError (ParserError i), MonadState (AnnotatedElement i))
 

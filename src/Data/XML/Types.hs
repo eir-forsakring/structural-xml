@@ -1,3 +1,5 @@
+{-# LANGUAGE RoleAnnotations #-}
+
 module Data.XML.Types
   ( -- * Unannotated types
     Document,
@@ -48,6 +50,7 @@ renderName XC.Name {nameLocalName, nameNamespace} =
   maybe "" (\ns -> "{" <> Text.unpack ns <> "}") nameNamespace
     <> Text.unpack nameLocalName
 
+type role AnnotatedDocument representational
 data AnnotatedDocument i = Document
   { rootName :: Name,
     root :: AnnotatedElement i,
@@ -56,6 +59,7 @@ data AnnotatedDocument i = Document
   deriving stock (Show, Eq, Ord, Generic)
 
 -- We move element names one level up to the parent element.
+type role AnnotatedElement representational
 data AnnotatedElement i = Element
   { attributes :: Map Name (Text, i),
     children :: [AnnotatedNode i],
@@ -69,6 +73,7 @@ type Element = AnnotatedElement ()
 
 type Node = AnnotatedNode ()
 
+type role AnnotatedNode representational
 data AnnotatedNode i
   = NodeElement Name (AnnotatedElement i) i
   | NodeContent Text i
@@ -76,10 +81,12 @@ data AnnotatedNode i
 
 -- | Helper for elements that only contain content. Has To/FromElement instances
 -- defined in terms of To/FromContent.
+type role ContentElement representational
 newtype ContentElement a = ContentElement {content :: a}
   deriving stock (Show, Eq, Ord, Generic)
 
 -- | Encodes `Nothing` as emptyElement. Parses the empty element as `Nothing`.
+type role OrEmpty representational
 newtype OrEmpty a = OrEmpty {unOrEmpty :: Maybe a}
 
 instance Semigroup Element where
