@@ -1,3 +1,5 @@
+{-# LANGUAGE RoleAnnotations #-}
+
 module Data.XML.Parse.Types
   ( Parser,
     ParserError (..),
@@ -27,6 +29,7 @@ import Text.Read (readMaybe)
 import Text.XML (Name)
 import Type.Reflection (Typeable, typeRep)
 
+type role ParserError representational
 data ParserError i = ParserError
   { callstack :: CallStack,
     info :: i,

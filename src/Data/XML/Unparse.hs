@@ -1,3 +1,5 @@
+{-# LANGUAGE RoleAnnotations #-}
+
 module Data.XML.Unparse
   ( -- * classes
     ToDocument (..),
@@ -69,6 +71,7 @@ class ToChoiceElement a where
 
 {- Constructing elements -}
 -- Note that the Element state has its child nodes in reverse order!
+type role ConstructM nominal
 newtype ConstructM a = ConstructM (State Element a)
   deriving newtype (Functor, Applicative, Monad, MonadState Element)
 

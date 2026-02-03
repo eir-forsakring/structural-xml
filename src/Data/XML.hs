@@ -1,3 +1,5 @@
+{-# LANGUAGE RoleAnnotations #-}
+
 {-
 How to use this library
   TODO!
@@ -85,7 +87,7 @@ import Data.XML.Parse.Types
 import Data.XML.Types
 import Data.XML.Unparse
 import GHC.Stack
-import Text.XML (def, parseLBS, parseText, renderLBS, renderText, rsPretty, rsXMLDeclaration)
+import Text.XML (def, parseLBS, parseText, renderLBS, renderText, rsXMLDeclaration)
 
 decodeDocument :: (HasCallStack, FromDocument a) => Text -> Either String a
 decodeDocument raw = case parseText def (Text.Lazy.fromStrict raw) of
@@ -141,17 +143,19 @@ encodeDocumentLBS =
     . toXmlConduit
     . toDocument
 
+type role ReadShowXmlDocument representational
 newtype ReadShowXmlDocument a = ReadShowXmlDocument a
 
 instance ToDocument a => Show (ReadShowXmlDocument a) where
   show (ReadShowXmlDocument a) =
-    Text.Lazy.unpack . renderText (def {rsPretty = True}) . toXmlConduit $ toDocument a
+    Text.Lazy.unpack . renderText def . toXmlConduit $ toDocument a
 
 instance FromDocument a => Read (ReadShowXmlDocument a) where
   readsPrec _ str = case decodeDocument (Text.pack str) of
     Right a -> [(ReadShowXmlDocument a, "")]
     Left err -> error err
 
+type role ReadShowXmlElement representational
 newtype ReadShowXmlElement a = ReadShowXmlElement a
 
 instance FromElement a => FromDocument (ReadShowXmlElement a) where
@@ -161,6 +165,6 @@ deriving via ReadShowXmlDocument (ReadShowXmlElement a) instance FromElement a =
 
 instance ToElement a => Show (ReadShowXmlElement a) where
   show (ReadShowXmlElement a) =
-    Text.Lazy.unpack . renderText (def {rsPretty = True, rsXMLDeclaration = False}) $
+    Text.Lazy.unpack . renderText (def {rsXMLDeclaration = False}) $
       toXmlConduit
         Document {root = toElement a, rootName = "root_element", info = ()}

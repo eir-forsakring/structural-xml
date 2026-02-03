@@ -1,3 +1,4 @@
+{-# LANGUAGE RoleAnnotations #-}
 {-# OPTIONS_GHC -Wno-redundant-constraints #-}
 
 module Data.XML.Parse.Ordered
@@ -34,6 +35,7 @@ import Data.XML.Parse.Types
 import Data.XML.Types
 import GHC.Stack
 
+type role OrderedM nominal nominal
 newtype OrderedM i a = OrderedM (StateT (AnnotatedElement i) (Either (ParserError i)) a)
   deriving newtype (Functor, Applicative, Monad, MonadError (ParserError i), MonadState (AnnotatedElement i))
 
